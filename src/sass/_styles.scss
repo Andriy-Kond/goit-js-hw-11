@@ -1,0 +1,80 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+#search-form {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.gallery {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; // перенос
+  gap: 30px; // проміжок між елементами
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  // display: grid;
+  // grid-template-columns: 1fr 1fr 1fr 1fr;
+  // grid-gap: 1rem;
+  // grid-template-rows: auto;
+}
+
+.photo-card {
+  display: flex;
+  flex-direction: column;
+  // flex-basis: calc((100% - 90px) / 4); // робить 4 стовбчики
+  // display: grid;
+  max-width: 340px;
+  // grid-template-columns: 1fr 1fr 1fr 1fr;
+  // grid-template-rows: auto;
+  // grid-gap: 1rem;
+}
+
+.gallery__item {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: zoom-in; // міняє курсор
+}
+
+.gallery__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; // робить світлину нормального співвідношення сторін
+  transition: transform var(--animation-duration) var(--timing-function);
+}
+
+.info {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+:root {
+  --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-duration: 250ms;
+}
+
+.gallery__item {
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+}
+
+.gallery__image:hover {
+  transform: scale(1.03);
+}
