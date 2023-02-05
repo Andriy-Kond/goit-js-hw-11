@@ -6,6 +6,7 @@ Notiflix.Notify.init({
   clickToClose: true,
   fontSize: '16px',
 });
+// Варіант повідомлень Notiflix:
 // Notiflix.Notify.success(`Fulfilled promise ${position} in ${delay}ms`);
 // Notiflix.Notify.warning('Please choose a date in the future');
 // Notiflix.Notify.failure(`Oops, there is no country with that name`);
@@ -20,14 +21,16 @@ const gallerySL = new SimpleLightbox('.gallery a', {
   // disableScroll: false,
 });
 
-// Підключаю lodash.debounce
-// const _ = require('lodash');
-// const throttle = require('lodash.throttle');
 const THROTTLE_DELAY = 500;
+// Роблю власний throttle, бо lodash дико глючить:
+const throttledScrollListener = throttle(scrollListener, THROTTLE_DELAY);
+// Підключаю lodash.debounce
+// const throttle = require('lodash.throttle');
+// const _ = require('lodash'); - це був другий варіант підлючення - всю бібліотеку разом
 
 // Імпорт бібліотеки axios (два варіанти)
-// const axios = require('axios');
-import axios, { formToJSON } from 'axios'; // ? чи буде так працювати?
+import axios from 'axios'; // працює і так
+// const axios = require('axios'); - другий варіант підключення
 
 const refs = {
   form: document.querySelector('.search-form'),
@@ -39,7 +42,7 @@ refs.form.addEventListener('submit', onSubmit);
 refs.loadMore.addEventListener('click', onLoadMore);
 refs.loadMore.style.visibility = 'hidden';
 
-let page; // Сторінка запиту.
+let page; // Сторінка запиту. Має бути без значення за замовчуванням!!!
 let request = ''; // Запит для перевірки чи він змінюється, щоби оновлювати лічильник сторінки
 let remainsItems = 0; // залишок незавантажених карток
 
@@ -256,20 +259,20 @@ function markupCards(gallery) {
   // );
 }
 
-// Функція очищення розмітки
+// ~ Функція очищення розмітки
 function clearDOM() {
   document.querySelector('.gallery').innerHTML = '';
 }
 
-// Функція відпрацювання помилок
+// ~ Функція відпрацювання помилок
 function onError(error) {
   refs.loadMore.style.visibility = 'hidden';
   Notiflix.Notify.failure(error.message);
 }
 
-// Функція для infinity scroll:
+// ~ Функція для infinity scroll:
 function scrollListener(e) {
-  console.log('e', e);
+  // console.log('e', e);
   // document.documentElement.clientWidth;
   // document.documentElement.scrollHeight;
   // document.documentElement.clientTop;
@@ -278,22 +281,21 @@ function scrollListener(e) {
 
   if (scrollTop + clientHeight + 1 >= scrollHeight) {
     // +1 тому що браузер іноді дає розмір менше.
-    console.log('I am at bottom');
+    // console.log('I am at bottom');
     if (remainsItems > 0) onLoadMore();
   }
 }
-
+// ~ Частина коду, що двічі повторюєтся - вивід повідомлення і знаття слухача
 function itemsIsFinished() {
   refs.loadMore.disabled = true;
   Notiflix.Notify.info(
     "We're sorry, but you've reached the end of search results."
   );
   window.removeEventListener('scroll', throttledScrollListener);
-  console.log('window.removeEventListener');
+  // console.log('window.removeEventListener');
 }
 
-const throttledScrollListener = throttle(scrollListener, THROTTLE_DELAY);
-
+// ~ Власний throttle для слухача window-scroll (lodash дико глючить)
 function throttle(callback, timeout) {
   let timer = null;
   return function perform(...args) {
