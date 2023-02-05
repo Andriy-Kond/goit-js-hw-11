@@ -21,8 +21,9 @@ const gallerySL = new SimpleLightbox('.gallery a', {
 });
 
 // Підключаю lodash.debounce
-const throttle = require('lodash.throttle');
-const DEBOUNCE_DELAY = 1000;
+const _ = require('lodash');
+// const throttle = require('lodash.throttle');
+const DELAY = 1000;
 
 // Імпорт бібліотеки axios (два варіанти)
 // const axios = require('axios');
@@ -35,10 +36,7 @@ const refs = {
 };
 
 refs.form.addEventListener('submit', onSubmit);
-
 refs.loadMore.addEventListener('click', onLoadMore);
-// refs.loadMore.disabled = true;
-// refs.loadMore.disabled = false;
 refs.loadMore.style.visibility = 'hidden';
 // refs.loadMore.style.visibility = 'inherit';
 let page; // Сторінка запиту.
@@ -47,6 +45,10 @@ let remainsItems = 0; // залишок незавантажених карто�
 
 // ^ Функція самбіту форми:
 async function onSubmit(e) {
+  // Реалізація infinity scroll
+  // Слухаю скрол через 300мс
+  // window.addEventListener('scroll', throttle(scrollListener, DELAY)); // Роблю затримку прослуховування скролу (1c)
+  window.addEventListener('scroll', scrollListener);
   e.preventDefault(); // відміняє дію форми за замовчуванням
   refs.loadMore.style.visibility = 'hidden';
   page = 1; // скидаю лічильник
@@ -70,10 +72,13 @@ async function onSubmit(e) {
     refs.gallery.innerHTML = markupCards(data);
     refs.loadMore.style.visibility = 'inherit';
     refs.loadMore.disabled = false;
+
+    // Якщо картки закінчились:
+    if (remainsItems <= 0) {
+      itemsIsFinished();
+    }
     gallerySL.refresh();
   }
-
-  // Робить галерею по кліку на картках:
 }
 
 // ^ Функція кнопки LoadMore
@@ -104,10 +109,7 @@ async function onLoadMore() {
 
     // Якщо картки закінчились:
     if (remainsItems <= 0) {
-      refs.loadMore.disabled = true;
-      Notiflix.Notify.info(
-        "We're sorry, but you've reached the end of search results."
-      );
+      itemsIsFinished();
     } else {
       // Плавний скролл лише якщо це НЕ новий запит, тобто сторінка НЕ перша
       if (page > 1) {
@@ -252,15 +254,12 @@ function onError(error) {
   Notiflix.Notify.failure(error.message);
 }
 
-// Реалізація infinity scroll:
-// Слухаю скрол через 300мс
-window.addEventListener('scroll', throttle(scrollListener, DEBOUNCE_DELAY)); // Роблю затримку прослуховування скролу (1c)
-
+// Функція для infinity scroll:
 function scrollListener(e) {
   console.log('e', e);
-  // document.documentElement.clientWidth
-  // document.documentElement.scrollHeight
-  // document.documentElement.clientTop
+  // document.documentElement.clientWidth;
+  // document.documentElement.scrollHeight;
+  // document.documentElement.clientTop;
   // Деструктуризація трьох рядків вище:
   const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
 
@@ -269,4 +268,13 @@ function scrollListener(e) {
     // console.log('I am at bottom');
     if (remainsItems > 0) onLoadMore();
   }
+}
+
+function itemsIsFinished() {
+  refs.loadMore.disabled = true;
+  Notiflix.Notify.info(
+    "We're sorry, but you've reached the end of search results."
+  );
+  window.removeEventListener('scroll', scrollListener);
+  console.log('window.removeEventListener');
 }
