@@ -21,7 +21,7 @@ const gallerySL = new SimpleLightbox('.gallery a', {
 });
 
 // Підключаю lodash.debounce
-const _ = require('lodash');
+// const _ = require('lodash');
 // const throttle = require('lodash.throttle');
 const DELAY = 1000;
 
@@ -38,7 +38,7 @@ const refs = {
 refs.form.addEventListener('submit', onSubmit);
 refs.loadMore.addEventListener('click', onLoadMore);
 refs.loadMore.style.visibility = 'hidden';
-// refs.loadMore.style.visibility = 'inherit';
+
 let page; // Сторінка запиту.
 let request = ''; // Запит для перевірки чи він змінюється, щоби оновлювати лічильник сторінки
 let remainsItems = 0; // залишок незавантажених карток
@@ -47,8 +47,8 @@ let remainsItems = 0; // залишок незавантажених карто�
 async function onSubmit(e) {
   // Реалізація infinity scroll
   // Слухаю скрол через 300мс
-  // window.addEventListener('scroll', throttle(scrollListener, DELAY)); // Роблю затримку прослуховування скролу (1c)
-  window.addEventListener('scroll', scrollListener);
+  window.addEventListener('scroll', scrollListener); // Роблю затримку прослуховування скролу (1c)
+  // window.addEventListener('scroll', scrollListener);
   e.preventDefault(); // відміняє дію форми за замовчуванням
   refs.loadMore.style.visibility = 'hidden';
   page = 1; // скидаю лічильник
@@ -76,6 +76,12 @@ async function onSubmit(e) {
     // Якщо картки закінчились:
     if (remainsItems <= 0) {
       itemsIsFinished();
+      // refs.loadMore.disabled = true;
+      // Notiflix.Notify.info(
+      //   "We're sorry, but you've reached the end of search results."
+      // );
+      // window.removeEventListener('scroll', scrollListener);
+      // console.log('window.removeEventListener');
     }
     gallerySL.refresh();
   }
@@ -110,6 +116,12 @@ async function onLoadMore() {
     // Якщо картки закінчились:
     if (remainsItems <= 0) {
       itemsIsFinished();
+      // refs.loadMore.disabled = true;
+      // Notiflix.Notify.info(
+      //   "We're sorry, but you've reached the end of search results."
+      // );
+      // window.removeEventListener('scroll', scrollListener);
+      // console.log('window.removeEventListener');
     } else {
       // Плавний скролл лише якщо це НЕ новий запит, тобто сторінка НЕ перша
       if (page > 1) {
@@ -256,7 +268,7 @@ function onError(error) {
 
 // Функція для infinity scroll:
 function scrollListener(e) {
-  console.log('e', e);
+  // console.log('e', e);
   // document.documentElement.clientWidth;
   // document.documentElement.scrollHeight;
   // document.documentElement.clientTop;
@@ -276,5 +288,5 @@ function itemsIsFinished() {
     "We're sorry, but you've reached the end of search results."
   );
   window.removeEventListener('scroll', scrollListener);
-  console.log('window.removeEventListener');
+  // console.log('window.removeEventListener');
 }
