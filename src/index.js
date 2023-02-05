@@ -17,6 +17,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const gallerySL = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 300,
+  // disableScroll: false,
 });
 
 // Підключаю lodash.debounce
