@@ -23,7 +23,7 @@ const gallerySL = new SimpleLightbox('.gallery a', {
 // Підключаю lodash.debounce
 // const _ = require('lodash');
 // const throttle = require('lodash.throttle');
-const DELAY = 1000;
+const THROTTLE_DELAY = 500;
 
 // Імпорт бібліотеки axios (два варіанти)
 // const axios = require('axios');
@@ -47,7 +47,8 @@ let remainsItems = 0; // залишок незавантажених карто�
 async function onSubmit(e) {
   // Реалізація infinity scroll
   // Слухаю скрол через 300мс
-  window.addEventListener('scroll', scrollListener); // Роблю затримку прослуховування скролу (1c)
+  window.addEventListener('scroll', throttledScrollListener); // Роблю затримку прослуховування скролу (1c)
+
   // window.addEventListener('scroll', scrollListener);
   e.preventDefault(); // відміняє дію форми за замовчуванням
   refs.loadMore.style.visibility = 'hidden';
@@ -268,7 +269,7 @@ function onError(error) {
 
 // Функція для infinity scroll:
 function scrollListener(e) {
-  // console.log('e', e);
+  console.log('e', e);
   // document.documentElement.clientWidth;
   // document.documentElement.scrollHeight;
   // document.documentElement.clientTop;
@@ -277,7 +278,7 @@ function scrollListener(e) {
 
   if (scrollTop + clientHeight + 1 >= scrollHeight) {
     // +1 тому що браузер іноді дає розмір менше.
-    // console.log('I am at bottom');
+    console.log('I am at bottom');
     if (remainsItems > 0) onLoadMore();
   }
 }
@@ -287,6 +288,20 @@ function itemsIsFinished() {
   Notiflix.Notify.info(
     "We're sorry, but you've reached the end of search results."
   );
-  window.removeEventListener('scroll', scrollListener);
-  // console.log('window.removeEventListener');
+  window.removeEventListener('scroll', throttledScrollListener);
+  console.log('window.removeEventListener');
+}
+
+const throttledScrollListener = throttle(scrollListener, THROTTLE_DELAY);
+
+function throttle(callback, timeout) {
+  let timer = null;
+  return function perform(...args) {
+    if (timer) return;
+    timer = setTimeout(() => {
+      callback(...args);
+      clearTimeout(timer);
+      timer = null;
+    }, timeout);
+  };
 }
