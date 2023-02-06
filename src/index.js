@@ -48,11 +48,10 @@ let remainsItems = 0; // залишок незавантажених карто�
 
 // ^ Функція самбіту форми:
 async function onSubmit(e) {
-  // Реалізація infinity scroll
+  // Реалізація infinity scroll (автоскролу)
   // Слухаю скрол через 300мс
   window.addEventListener('scroll', throttledScrollListener); // Роблю затримку прослуховування скролу (1c)
 
-  // window.addEventListener('scroll', scrollListener);
   e.preventDefault(); // відміняє дію форми за замовчуванням
   refs.loadMore.style.visibility = 'hidden';
   page = 1; // скидаю лічильник
@@ -72,40 +71,35 @@ async function onSubmit(e) {
 
   // Якщо данні є (не undefined):
   if (data) {
-    // Додаю розмітку:
+    // Додаю розмітку, роблю кнопку LOAD MORE видимою і активною
     refs.gallery.innerHTML = markupCards(data);
     refs.loadMore.style.visibility = 'inherit';
     refs.loadMore.disabled = false;
 
-    // Якщо картки закінчились:
+    // Якщо картки закінчились
     if (remainsItems <= 0) {
+      // Вивожу повідомлення про це, роблю кнопку LOAD MORE неактивною і знимаю слухача scroll:
       itemsIsFinished();
-      // refs.loadMore.disabled = true;
-      // Notiflix.Notify.info(
-      //   "We're sorry, but you've reached the end of search results."
-      // );
-      // window.removeEventListener('scroll', scrollListener);
-      // console.log('window.removeEventListener');
     }
+    // Оновлюю галерею SimpleLightbox (потребує при маніпуляціях з DOM)
     gallerySL.refresh();
   }
 }
 
-// ^ Функція кнопки LoadMore
+// ^ Функція кнопки LoadMore та автоскролу
 async function onLoadMore() {
   // Дивлюсь що зараз введено у формі:
   const form = document.querySelector('body .search-form');
 
-  // Якщо запит змінився:
+  // Якщо запит змінився роблю те саме, що і при submit:
   if (request !== form.elements.searchQuery.value) {
     clearDOM();
     request = form.elements.searchQuery.value;
     page = 1; // скидаю лічильник
-    refs.loadMore.style.visibility = 'hidden';
-    // const lastPage =
+    refs.loadMore.style.visibility = 'hidden'; // ховаю кнопку LOAD MORE
   }
 
-  // Обробляю запит і випадок помилки запиту:
+  // Якщо запит той самий, то обробляю його і випадок його помилки:
   const data = await requestToPixabayBase(request, page).catch(error => {
     onError(error);
   });
@@ -150,6 +144,10 @@ async function onLoadMore() {
 
 // ^ Функція обробки запиту:
 async function requestToPixabayBase(q, page) {
+  // спочатку роблю кнопку з іншим написом
+  refs.loadMore.disabled = true;
+  refs.loadMore.textContent = 'LOADING';
+
   const MY_KEY = '33366610-411111b526c4f712cf2f691e8'; // мій унікальний ключ
   const END_POINT = 'https://pixabay.com/api/';
   const per_page = 40; // кількість карток на сторінці
@@ -186,6 +184,9 @@ async function requestToPixabayBase(q, page) {
     Notiflix.Notify.success(`Hooray! We found ${totalItems} images.`);
   }
 
+  // Повертаю кнопці LOAD MORE нормальний стан
+  refs.loadMore.disabled = false;
+  refs.loadMore.textContent = 'LOAD MORE';
   return response.data.hits; // повертає масив об'єктів запиту
 }
 
