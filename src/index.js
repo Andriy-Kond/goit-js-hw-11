@@ -25,12 +25,12 @@ const THROTTLE_DELAY = 500;
 // Роблю власний throttle, бо lodash дико глючить:
 const throttledScrollListener = throttle(scrollListener, THROTTLE_DELAY);
 // Підключаю lodash.debounce
-// const throttle = require('lodash.throttle');
-// const _ = require('lodash'); - це був другий варіант підлючення - всю бібліотеку разом
+// const throttle = require('lodash.throttle'); // перший варіант підключення
+// const _ = require('lodash'); // другий варіант підключення - всю бібліотеку разом
 
 // Імпорт бібліотеки axios (два варіанти)
 import axios from 'axios'; // працює і так
-// const axios = require('axios'); - другий варіант підключення
+// const axios = require('axios'); // другий варіант підключення
 
 const refs = {
   form: document.querySelector('.search-form'),
@@ -78,7 +78,7 @@ async function onSubmit(e) {
 
     // Якщо картки закінчились
     if (remainsItems <= 0) {
-      // Вивожу повідомлення про це, роблю кнопку LOAD MORE неактивною і знимаю слухача scroll:
+      // Вивожу повідомлення про це, роблю кнопку LOAD MORE неактивною і знімаю слухача scroll:
       itemsIsFinished();
     }
     // Оновлюю галерею SimpleLightbox (потребує при маніпуляціях з DOM)
@@ -187,6 +187,7 @@ async function requestToPixabayBase(q, page) {
   // Повертаю кнопці LOAD MORE нормальний стан
   refs.loadMore.disabled = false;
   refs.loadMore.textContent = 'LOAD MORE';
+
   return response.data.hits; // повертає масив об'єктів запиту
 }
 
@@ -208,6 +209,7 @@ function markupCards(gallery) {
     <a class="gallery__item" href="${largeImageURL}">
       <img class="gallery__image" src="${webformatURL}" alt="${tags}" loading="lazy"/>
     </a>
+    
     <div class="info">
       <p class="info-item">
         <b>Likes</b> ${likes}
