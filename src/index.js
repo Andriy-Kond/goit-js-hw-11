@@ -1,3 +1,6 @@
+// Додати до інпуту автофокус через JS якщо DOM малюється вже після його додавання:
+// window.onload = () => document.querySelector('.input-submit').focus();
+
 import Notiflix from 'notiflix';
 Notiflix.Notify.init({
   position: 'right-top',
