@@ -89,6 +89,8 @@ async function onSubmit(e) {
   }
 }
 
+const a = 5;
+
 // ^ Функція кнопки LoadMore та автоскролу
 async function onLoadMore() {
   // Дивлюсь що зараз введено у формі:
