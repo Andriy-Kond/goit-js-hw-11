@@ -1,73 +1,127 @@
-# Parcel template
+# Task - image search
 
-This project was created with Parcel. For familiarization and setting additional features [refer to documentation](https://parceljs.org/).
+# Create the front-end part of the application for searching and viewing images by keyword. Add design of interface elements. Watch a demo video of the application.
 
-## Preparing a new project
+## Search form
 
-1. Make sure you have an LTS version of Node.js installed on your computer.
-   [Download and install](https://nodejs.org/en/) if needed.
-2. Clone this repository.
-3. Change the folder name from `parcel-project-template` to the name of your project.
-4. Create a new empty GitHub repository.
-5. Open the project in VSCode, launch the terminal and link the project to the GitHub repository
-   [by instructions](https://docs.github.com/en/get-started/getting-started-with-git/managing-remote-repositories#changing-a-remote-repositorys-url).
-6. Install the project's dependencies in the terminal with the `npm install` command.
-7. Start development mode by running the `npm start` command.
-8. Go to [http://localhost:1234](http://localhost:1234) in your browser.
-   This page will automatically reload after saving changes to the project files.
+- The form is initially contained in an HTML document. The user will enter a
+  string for search in the text field, and after submitting the form, an HTTP
+  request must be performed.
 
-## Files and folders
+<form class="search-form" id="search-form">
+   <input
+     type="text"
+     name="searchQuery"
+     autocomplete="off"
+     placeholder="Search images..."
+   />
+   <button type="submit">Search</button>
+</form>
 
-- All stylesheet parshas should be in the `src/sass` folder and imported into the page stylesheets. For example, for `index.html` the style file is named `index.scss`.
-- Add images to the `src/images` folder. The assembler optimizes them, but only when deploying the production version of the project. All this happens in the cloud so as not to burden your computer, as it can take a long time on weak machines.
+## HTTP requests
 
-## Deploy
+- For the backend, use the public API of the Pixabay service. Sign up, get it
+  your unique access key and read the documentation.
 
-To set up a project deployment, you need to perform a few additional steps to set up your repository. Go to the `Settings` tab and in the `Actions` subsection select the `General` item.
+### List of query string parameters that you must specify:
 
-![GitHub actions settings](./assets/actions-config-step-1.png)
+- key - your unique API access key.
+- q - search term. What the user will type.
+- image_type - image type. Only photos are needed, so post the value of photo.
+- orientation - orientation of the photo. Set the value to horizontal.
+- safesearch - age filter. Set the value to true.
+- The response will contain an array of images that meet the criteria of the
+  request parameters. Each image is described by an object, of which you are
+  only interested in the following properties:
 
-Scroll the page to the last section, in which make sure the options are selected as in the following image and click `Save`. Without these settings, the build will not have enough rights to automate the deployment process.
+- webformatURL - link to a small image for the card list.
+- largeImageURL - a link to a large image.
+- tags - a line with a description of the image. Suitable for the alt attribute.
+- likes - number of likes.
+- views - number of views.
+- comments - number of comments.
+- downloads - number of downloads.
+- If the backend returns an empty array, then there was nothing suitable found
+  In this case, show a message with the text "Sorry, there are no images
+  matching your search query. Please try again.". For messages use the notiflix
+  library.
 
-![GitHub actions settings](./assets/actions-config-step-2.png)
+## Gallery and image card
 
-The production version of the project will be automatically built and deployed to GitHub Pages, in the `gh-pages` branch, every time the `main` branch is updated. For example, after a direct push or an accepted pull request. To do this, you need to edit the `homepage` field and the `build` script in the `package.json` file, replacing `your_username` and `your_repo_name` with your own, and submit the changes to GitHub.
+The div.gallery element is initially contained in the HTML document and is
+required render image card markup. When searching for a new keyword it is
+necessary to completely clean the contents of the gallery so as not to mix the
+results.
 
+<div class="gallery">
+   <!-- Image cards -->
+</div>
 
-```json
-"homepage": "https://your_username.github.io/your_repo_name/",
-"scripts": {
-  "build": "parcel build src/*.html --public-url /your_repo_name/"
-},
-```
+- Single image card layout template for gallery.
 
-Next, you need to go to the settings of the GitHub repository (`Settings` > `Pages`) and set the distribution of the production version of files from the `/root` folder of the `gh-pages` branch, if this was not done automatically.
+<div class="photo-card">
+   <img src="" alt="" loading="lazy" />
+   <div class="info">
+     <p class="info-item">
+       <b>Likes</b>
+     </p>
+     <p class="info-item">
+       <b>Views</b>
+     </p>
+     <p class="info-item">
+       <b>Comments</b>
+     </p>
+     <p class="info-item">
+       <b>Downloads</b>
+     </p>
+   </div>
+</div>
 
-![GitHub Pages settings](./assets/repo-settings.png)
+## Pagination
 
-### Deployment status
+The Pixabay API supports pagination and provides page and per_page parameters.
+do so so that each response contains 40 objects (20 by default).
 
-The deployment status of the latest commit is displayed with an icon next to its ID.
+- The initial value of the page parameter must be 1.
+- With each subsequent request, it must be increased by 1.
+- In the case of searching for a new keyword, the page value must be returned to
+  initial, as there will be pagination through the new collection of images.
+  HTML the document already contains the markup of the button that needs to be
+  executed when clicked query for the next group of images and add markup to
+  existing ones gallery elements.
 
-- **Yellow color** - the project is being built and deployed.
-- **Green color** - deployment completed successfully.
-- **Red color** - an error occurred during linting, build or deployment.
+<button type="button" class="load-more">Load more</button>
 
-More detailed information about the status can be viewed by clicking on the icon, and in the drop-down window, follow the link `Details`.
+- In the initial state, the button should be hidden.
+- After the first request, the button appears in the interface under the
+  gallery.
+- When resubmitting the form, the button is first hidden, and then again after
+  the request is displayed.
+- In the response, the backend returns the totalHits property - the total number
+  images that match the search criteria (for a free account). If the user has
+  reached the end of the collection, hide the button and display a message from
+  with the text "We're sorry, but you've reached the end of search results.".
 
-![Deployment status](./assets/status.png)
+# Additionally
 
-### Live page
+## Message
 
-After some time, usually a couple of minutes, the live page can be viewed at the address specified in the edited `homepage` property. For example, here is a link to a live version for this repository
-[https://goitacademy.github.io/parcel-project-template](https://goitacademy.github.io/parcel-project-template).
+- After the first request, with each new search, receive a message in which it
+  will be written how many images were found (totalHits property). Text
+  message - "Hooray! We found totalHits images."
 
-If a blank page opens, make sure there are no errors in the `Console` tab related to incorrect paths to the CSS and JS files of the project (**404**). Most likely you have the wrong value for the `homepage` property or the `build` script in the `package.json` file.
+## SimpleLightbox library
 
-## How it works
+- Add display of large version of image with SimpleLightbox library for full
+  gallery.
 
-![How it works](./assets/how-it-works.png)
+- In the markup, you will need to wrap each image card in a link, like specified
+  in the documentation.
+- The library contains the refresh() method, which must be called every time
+  after adding a new group of image cards. In order to connect the CSS code
+  library in the project, it is necessary to add one more import, in addition to
+  the one described in documentation.
 
-1. After each push to the `main` branch of the GitHub repository, a special script (GitHub Action) is launched from the `.github/workflows/deploy.yml` file.
-2. All repository files are copied to the server, where the project is initialized and built before deployment.
-3. If all steps are successful, the built production version of the project files is sent to the `gh-pages` branch. Otherwise, the script execution log will indicate what the problem is.
+- Described in the documentation import SimpleLightbox from "simplelightbox";
+- Additional import of styles import
+  "simplelightbox/dist/simple-lightbox.min.css";
