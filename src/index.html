@@ -9,37 +9,9 @@
   </head>
   <body id="home">
     <!-- ❗️❗️❗️ Add partials like so for every page -->
-    <!-- <include src="./partials/example.html"></include> -->
-
-    <form class="search-form" id="search-form">
-      <input
-        class="input-submit"
-        type="text"
-        name="searchQuery"
-        autocomplete="off"
-        placeholder="Search images..."
-        autofocus
-      />
-      <button type="submit" class="btn-submit">Search</button>
-    </form>
-
-    <div class="gallery">
-      <!-- Картки зображень -->
-    </div>
-
-    <!-- * Кнопка, по кліку на яку, необхідно виконувати запит за наступною групою зображень і додавати розмітку до вже існуючих елементів галереї. -->
-    <button type="button" class="load-more" id="end">Load more</button>
-    <a href="#home" title="Вгору" class="top-button">
-      <svg class="top__icon">
-        <use href="./images/icons.svg#to-top"></use>
-      </svg>
-    </a>
-
-    <a href="#end" title="Вниз" class="bottom-button">
-      <svg class="bottom__icon">
-        <use href="./images/icons.svg#to-bottom"></use>
-      </svg>
-    </a>
+    <include src="./partials/form.html"></include>
+    <include src="./partials/gallery.html"></include>
+    <include src="./partials/buttons.html"></include>
 
     <script src="./index.js" type="module"></script>
   </body>
