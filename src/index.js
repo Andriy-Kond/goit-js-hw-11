@@ -16,9 +16,9 @@
 // Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
 
 import refs from './js/refs';
-import onLoadMore from './js/onLoadMore';
+import onLoadItems from './js/onLoadItems';
 import onSubmit from './js/onSubmit';
 
 refs.form.addEventListener('submit', onSubmit);
-refs.loadMore.addEventListener('click', onLoadMore);
+refs.loadMore.addEventListener('click', onLoadItems);
 refs.loadMore.style.visibility = 'hidden';

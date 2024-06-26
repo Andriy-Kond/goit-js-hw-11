@@ -17,7 +17,7 @@ import { setRemainsItems } from './variables';
 import clearDOM from './clearDOM';
 
 // ^ Функція обробки запиту:
-export default async function requestToPixabayBase(request, page) {
+export default async function fetchToPixabayBase(request, page) {
   // спочатку роблю кнопку з іншим написом
   refs.loadMore.disabled = true;
   refs.loadMore.textContent = 'LOADING';
