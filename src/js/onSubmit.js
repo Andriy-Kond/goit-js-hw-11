@@ -3,6 +3,7 @@ import refs from './refs';
 
 import throttledScrollListener from './throttledScrollListener';
 import onLoadItems from './onLoadItems';
+import clearDOM from './clearDOM';
 
 // ^ Функція самбіту форми:
 export default async function onSubmit(e) {
@@ -12,7 +13,7 @@ export default async function onSubmit(e) {
 
   refs.submitBtn.disabled = true;
   setPage(1);
-  refs.gallery.innerHTML = '';
+  clearDOM();
   refs.loadMore.style.visibility = 'hidden';
 
   await onLoadItems();
