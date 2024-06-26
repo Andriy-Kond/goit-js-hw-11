@@ -6,6 +6,7 @@ export default function scrollListener(e) {
   // document.documentElement.clientWidth;
   // document.documentElement.scrollHeight;
   // document.documentElement.clientTop;
+
   // Деструктуризація трьох рядків вище:
   const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
 
