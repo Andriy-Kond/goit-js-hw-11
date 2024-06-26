@@ -13,4 +13,34 @@ let remainsItems = 0; // залишок незавантажених карто�
 
 const THROTTLE_DELAY = 500;
 
-export { page, request, remainsItems, THROTTLE_DELAY, gallerySL };
+function getPage() {
+  return page;
+}
+function setPage(arg) {
+  page = arg;
+}
+
+function getRequest() {
+  return request;
+}
+function setRequest(arg) {
+  request = arg;
+}
+
+function getRemainsItems() {
+  return remainsItems;
+}
+function setRemainsItems(arg) {
+  remainsItems = arg;
+}
+
+export {
+  getPage,
+  setPage,
+  getRequest,
+  setRequest,
+  getRemainsItems,
+  setRemainsItems,
+  THROTTLE_DELAY,
+  gallerySL,
+};

@@ -4,7 +4,14 @@ import clearDOM from './clearDOM';
 import markupCards from './markupCards';
 import onError from './onError';
 import itemsIsFinished from './itemsIsFinished';
-import { page, request, remainsItems, gallerySL } from './variables';
+import {
+  setPage,
+  getPage,
+  setRequest,
+  getRequest,
+  getRemainsItems,
+  gallerySL,
+} from './variables';
 
 // ^ Функція кнопки LoadMore та автоскролу
 export default async function onLoadMore() {
@@ -12,17 +19,19 @@ export default async function onLoadMore() {
   const form = document.querySelector('body .search-form');
 
   // Якщо запит змінився роблю те саме, що і при submit:
-  if (request !== form.elements.searchQuery.value) {
+  if (getRequest() !== form.elements.searchQuery.value) {
     clearDOM();
-    request = form.elements.searchQuery.value;
-    page = 1; // скидаю лічильник
+    setRequest(form.elements.searchQuery.value);
+    setPage(1); // скидаю лічильник
     refs.loadMore.style.visibility = 'hidden'; // ховаю кнопку LOAD MORE
   }
 
   // Якщо запит той самий, то обробляю його і випадок його помилки:
-  const data = await requestToPixabayBase(request, page).catch(error => {
-    onError(error);
-  });
+  const data = await requestToPixabayBase(getRequest(), getPage()).catch(
+    error => {
+      onError(error);
+    }
+  );
 
   // Якщо данні є (не undefined):
   if (data) {
@@ -32,7 +41,7 @@ export default async function onLoadMore() {
     gallerySL.refresh();
 
     // Якщо картки закінчились:
-    if (remainsItems <= 0) {
+    if (getRemainsItems() <= 0) {
       itemsIsFinished();
       // refs.loadMore.disabled = true;
       // Notiflix.Notify.info(
@@ -42,7 +51,7 @@ export default async function onLoadMore() {
       // console.log('window.removeEventListener');
     } else {
       // Плавний скролл лише якщо це НЕ новий запит, тобто сторінка НЕ перша
-      if (page > 1) {
+      if (getPage() > 1) {
         // "плавний" скрол - прокручує на +2 картки по вертикалі
         const { height: cardHeight } = document
           .querySelector('.gallery')
@@ -57,5 +66,5 @@ export default async function onLoadMore() {
     }
   }
 
-  page += 1;
+  setPage(getPage() + 1);
 }

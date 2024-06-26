@@ -1,33 +1,44 @@
-import markupCards from './markupCards';
-import { page, request, remainsItems } from './variables';
-import requestToPixabayBase from './requestToPixabayBase';
-import clearDOM from './clearDOM';
-import onError from './onError';
-import itemsIsFinished from './itemsIsFinished';
+import {
+  setPage,
+  getPage,
+  getRemainsItems,
+  getRequest,
+  setRequest,
+  gallerySL,
+} from './variables';
+import refs from './refs';
 import throttledScrollListener from './throttledScrollListener';
+import clearDOM from './clearDOM';
+import requestToPixabayBase from './requestToPixabayBase';
+import onError from './onError';
+import markupCards from './markupCards';
+import itemsIsFinished from './itemsIsFinished';
 
 // ^ Функція самбіту форми:
 export default async function onSubmit(e) {
-  // Реалізація infinity scroll (автоскролу)
+  // * Реалізація infinity scroll (автоскролу)
   // Слухаю скрол через 300мс
   window.addEventListener('scroll', throttledScrollListener); // Роблю затримку прослуховування скролу (1c)
 
   e.preventDefault(); // відміняє дію форми за замовчуванням
   refs.loadMore.style.visibility = 'hidden';
-  page = 1; // скидаю лічильник
+  setPage(1); // скидаю лічильник
 
   // Якщо запит змінився:
-  if (request !== e.target.elements.searchQuery.value) {
+
+  if (getRequest() !== e.target.elements.searchQuery.value) {
     clearDOM();
-    request = e.target.elements.searchQuery.value;
+    setRequest(e.target.elements.searchQuery.value);
   }
 
   // Обробляю запит і випадок помилки запиту:
-  const data = await requestToPixabayBase(request, page).catch(error => {
-    onError(error);
-  });
+  const data = await requestToPixabayBase(getRequest(), getPage()).catch(
+    error => {
+      onError(error);
+    }
+  );
 
-  page += 1;
+  setPage(getPage() + 1);
 
   // Якщо данні є (не undefined):
   if (data) {
@@ -37,7 +48,7 @@ export default async function onSubmit(e) {
     refs.loadMore.disabled = false;
 
     // Якщо картки закінчились
-    if (remainsItems <= 0) {
+    if (getRemainsItems() <= 0) {
       // Вивожу повідомлення про це, роблю кнопку LOAD MORE неактивною і знімаю слухача scroll:
       itemsIsFinished();
     }

@@ -2,7 +2,18 @@
 import axios from 'axios'; // працює і так
 // const axios = require('axios'); // другий варіант підключення
 
-import { remainsItems } from './variables';
+import refs from './refs';
+import Notiflix from 'notiflix';
+Notiflix.Notify.init({
+  position: 'right-top',
+  opacity: 0.8,
+  timeout: 3000,
+  clickToClose: true,
+  fontSize: '16px',
+});
+
+import refs from './refs';
+import { setRemainsItems } from './variables';
 import clearDOM from './clearDOM';
 
 // ^ Функція обробки запиту:
@@ -41,8 +52,8 @@ export default async function requestToPixabayBase(request, page) {
   }
 
   // Віднімаю кількість завантаженого від загальної кількості карток:
-  remainsItems = response.data.totalHits - page * per_page;
   const totalItems = response.data.totalHits;
+  setRemainsItems(totalItems - page * per_page);
   if (totalItems !== 0 && page === 1) {
     Notiflix.Notify.success(`Hooray! We found ${totalItems} images.`);
   }
