@@ -24,7 +24,7 @@ export default async function fetchToPixabayBase(request, page) {
 
   const MY_KEY = '33366610-411111b526c4f712cf2f691e8'; // мій унікальний ключ
   const END_POINT = 'https://pixabay.com/api/';
-  const per_page = 40; // кількість карток на сторінці
+  const per_page = 10; // кількість карток на сторінці
   // Параметри запиту:
   const searchParams = new URLSearchParams({
     key: MY_KEY,

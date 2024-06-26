@@ -33,6 +33,7 @@ export default async function onLoadItems() {
   if (getRequest() !== currentRequest) {
     refs.loadMore.style.visibility = 'hidden'; // ховаю кнопку LOAD MORE
     clearDOM();
+
     setPage(1); // скидаю лічильник
     setRequest(currentRequest);
   }
@@ -52,6 +53,10 @@ export default async function onLoadItems() {
     refs.loadMore.disabled = false;
     // Оновлюю галерею SimpleLightbox (потребує при маніпуляціях з DOM)
     gallerySL.refresh();
+
+    // * Реалізація infinity scroll (автоскролу)
+    // Слухаю скрол через 300мс
+    window.addEventListener('scroll', throttledScrollListener); // Роблю затримку прослуховування скролу (1c)
 
     // Якщо картки закінчились:
     if (getRemainsItems() <= 0) {

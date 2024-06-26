@@ -13,6 +13,7 @@ export default function scrollListener(e) {
   if (scrollTop + clientHeight + 1 >= scrollHeight) {
     // +1 тому що браузер іноді дає розмір менше.
     // console.log('I am at bottom');
+
     if (getRemainsItems() > 0) onLoadItems();
   }
 }
