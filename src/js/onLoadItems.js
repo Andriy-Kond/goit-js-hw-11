@@ -7,14 +7,6 @@ Notiflix.Notify.init({
   fontSize: '16px',
 });
 
-import {
-  setPage,
-  getPage,
-  setRequest,
-  getRequest,
-  getRemainsItems,
-  gallerySL,
-} from './variables';
 import refs from './refs';
 import fetchToPixabayBase from './fetchToPixabayBase';
 import clearDOM from './clearDOM';
@@ -22,6 +14,9 @@ import markupCards from './markupCards';
 import onError from './onError';
 import throttledScrollListener from './throttledScrollListener';
 import smoothScroll from './smoothScroll';
+import { gallerySL, Variables } from './variables';
+
+const variables = new Variables();
 
 // ^ Функція кнопки LoadMore та автоскролу
 export default async function onLoadItems() {
@@ -30,20 +25,24 @@ export default async function onLoadItems() {
   const currentRequest = form.elements.searchQuery.value;
 
   // Якщо запит змінився:
-  if (getRequest() !== currentRequest) {
+  if (variables.request !== currentRequest) {
     refs.loadMore.style.visibility = 'hidden'; // ховаю кнопку LOAD MORE
     clearDOM();
 
-    setPage(1); // скидаю лічильник
-    setRequest(currentRequest);
+    variables.page = 1; // скидаю лічильник
+    variables.request = currentRequest;
   }
 
   // Обробляю запит і випадок помилки запиту:
-  const data = await fetchToPixabayBase(getRequest(), getPage()).catch(
-    error => {
-      onError(error);
-    }
-  );
+  const data = await fetchToPixabayBase(
+    variables.request,
+    variables.page
+  ).catch(error => {
+    onError(error);
+  });
+
+  console.log('onLoadItems >> variables.page:::', variables.page);
+  console.log('onLoadItems >> variables.request:::', variables.request);
 
   // Якщо данні є (не undefined):
   if (data) {
@@ -58,8 +57,12 @@ export default async function onLoadItems() {
     // Слухаю скрол через 300мс
     window.addEventListener('scroll', throttledScrollListener); // Роблю затримку прослуховування скролу (1c)
 
+    console.log(
+      'onLoadItems >> variables.remainsItems:::',
+      variables.remainsItems
+    );
     // Якщо картки закінчились:
-    if (getRemainsItems() <= 0) {
+    if (variables.remainsItems <= 0) {
       // Вивожу повідомлення про це, роблю кнопку LOAD MORE неактивною і знімаю слухача scroll:
       Notiflix.Notify.info(
         "We're sorry, but you've reached the end of search results."
@@ -68,11 +71,11 @@ export default async function onLoadItems() {
       window.removeEventListener('scroll', throttledScrollListener);
     } else {
       // Плавний скролл лише якщо це НЕ новий запит, тобто сторінка НЕ перша
-      if (getPage() > 1) {
+      if (variables.page > 1) {
         smoothScroll();
       }
     }
   }
 
-  setPage(getPage() + 1);
+  variables.page += 1;
 }

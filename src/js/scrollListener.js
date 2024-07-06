@@ -1,5 +1,7 @@
-import { getRemainsItems } from './variables';
+import { Variables } from './variables';
 import onLoadItems from './onLoadItems';
+
+const variables = new Variables();
 
 // ~ Функція для infinity scroll:
 export default function scrollListener(e) {
@@ -14,6 +16,6 @@ export default function scrollListener(e) {
     // +1 тому що браузер іноді дає розмір менше.
     // console.log('I am at bottom');
 
-    if (getRemainsItems() > 0) onLoadItems();
+    if (variables.remainsItems > 0) onLoadItems();
   }
 }

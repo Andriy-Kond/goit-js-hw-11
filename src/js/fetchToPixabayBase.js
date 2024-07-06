@@ -13,8 +13,11 @@ Notiflix.Notify.init({
 });
 
 import refs from './refs';
-import { setRemainsItems } from './variables';
+// import { setRemainsItems } from './variables';
 import clearDOM from './clearDOM';
+import { Variables } from './variables';
+
+const variables = new Variables();
 
 // ^ Функція обробки запиту:
 export default async function fetchToPixabayBase(request, page) {
@@ -53,7 +56,12 @@ export default async function fetchToPixabayBase(request, page) {
 
   // Віднімаю кількість завантаженого від загальної кількості карток:
   const totalItems = response.data.totalHits;
-  setRemainsItems(totalItems - page * per_page);
+  // setRemainsItems(totalItems - page * per_page);
+  variables.remainsItems = totalItems - page * per_page;
+  console.log('variables.remainsItems:::', variables.remainsItems);
+  console.log('variables.query :>> ', variables.query);
+  console.log('variables.request :>> ', variables.request);
+
   if (totalItems !== 0 && page === 1) {
     Notiflix.Notify.success(`Hooray! We found ${totalItems} images.`);
   }
