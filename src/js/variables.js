@@ -34,9 +34,10 @@ class Variables {
   }
   set remainsItems(arg) {
     this.countItems = arg;
-    console.log('записую залишок сторінок');
   }
 }
+
+const variables = new Variables();
 
 // let page; // !Сторінка запиту. Має бути без значення за замовчуванням!!!
 // let request = ''; // Запит для перевірки чи він змінюється, щоби оновлювати лічильник сторінки
@@ -74,5 +75,5 @@ export {
   // setRemainsItems,
   // THROTTLE_DELAY,
   gallerySL,
-  Variables,
+  variables,
 };

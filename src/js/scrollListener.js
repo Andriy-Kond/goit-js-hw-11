@@ -1,7 +1,5 @@
-import { Variables } from './variables';
+import { variables } from './variables';
 import onLoadItems from './onLoadItems';
-
-const variables = new Variables();
 
 // ~ Функція для infinity scroll:
 export default function scrollListener(e) {

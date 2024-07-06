@@ -1,4 +1,4 @@
-import { Variables } from './variables';
+import { variables } from './variables';
 
 import refs from './refs';
 
@@ -6,7 +6,6 @@ import throttledScrollListener from './throttledScrollListener';
 import onLoadItems from './onLoadItems';
 import clearDOM from './clearDOM';
 
-const variables = new Variables();
 // ^ Функція самбіту форми:
 export default async function onSubmit(e) {
   e.preventDefault(); // відміняє дію форми за замовчуванням

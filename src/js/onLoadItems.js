@@ -14,9 +14,7 @@ import markupCards from './markupCards';
 import onError from './onError';
 import throttledScrollListener from './throttledScrollListener';
 import smoothScroll from './smoothScroll';
-import { gallerySL, Variables } from './variables';
-
-const variables = new Variables();
+import { gallerySL, variables } from './variables';
 
 // ^ Функція кнопки LoadMore та автоскролу
 export default async function onLoadItems() {
@@ -41,9 +39,6 @@ export default async function onLoadItems() {
     onError(error);
   });
 
-  console.log('onLoadItems >> variables.page:::', variables.page);
-  console.log('onLoadItems >> variables.request:::', variables.request);
-
   // Якщо данні є (не undefined):
   if (data) {
     // Додаю розмітку, роблю кнопку LOAD MORE видимою і активною
@@ -57,10 +52,6 @@ export default async function onLoadItems() {
     // Слухаю скрол через 300мс
     window.addEventListener('scroll', throttledScrollListener); // Роблю затримку прослуховування скролу (1c)
 
-    console.log(
-      'onLoadItems >> variables.remainsItems:::',
-      variables.remainsItems
-    );
     // Якщо картки закінчились:
     if (variables.remainsItems <= 0) {
       // Вивожу повідомлення про це, роблю кнопку LOAD MORE неактивною і знімаю слухача scroll:
